@@ -69,22 +69,6 @@
       text-align: center;
     }
 
-    .logo-badge {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 64px;
-      height: 64px;
-      background: linear-gradient(145deg, var(--accent-dark), var(--accent));
-      color: white;
-      font-weight: 700;
-      font-size: 1.1rem;
-      letter-spacing: 0.5px;
-      border-radius: 50%;
-      margin-bottom: 1.25rem;
-      box-shadow: var(--shadow);
-    }
-
     h1 {
       font-size: clamp(1.45rem, 5vw, 1.85rem);
       font-weight: 700;
@@ -125,20 +109,10 @@
       border: 0;
     }
 
-    /* ========== BOTÃO PRINCIPAL (oculto no início) ========== */
+    /* ========== BOTÃO PRINCIPAL (sempre visível) ========== */
     .cta-primary {
-      display: none; /* controlado via JS */
-      opacity: 0;
-      transform: translateY(12px);
-      transition: opacity 0.5s ease, transform 0.5s ease;
       text-align: center;
       padding: 0.5rem 0 1.5rem;
-    }
-
-    .cta-primary.visible {
-      display: block;
-      opacity: 1;
-      transform: translateY(0);
     }
 
     .btn {
@@ -308,19 +282,11 @@
         padding-bottom: 56.25%; /* 16:9 em telas maiores */
         max-height: 420px;
       }
-
-      .video-wrapper iframe {
-        /* mantém proporção */
-      }
     }
 
     @media (min-width: 640px) {
       header {
         padding-top: 3.5rem;
-      }
-
-      .steps-grid {
-        grid-template-columns: 1fr;
       }
     }
 
@@ -338,7 +304,6 @@
 
     <!-- ========== CABEÇALHO ========== -->
     <header>
-      <div class="logo-badge">EVG</div>
       <!-- Título principal — altere aqui se quiser -->
       <h1>EVG — Venha participar das Aulinhas</h1>
       <!-- Subtítulo — altere aqui se quiser -->
@@ -350,14 +315,20 @@
     <!-- ========== VÍDEO ========== -->
     <section class="video-section">
       <div class="video-wrapper">
-        <!-- O player será injetado aqui pela YouTube IFrame API -->
-        <div id="player"></div>
+        <!-- Player do YouTube Shorts -->
+        <iframe
+          src="https://www.youtube.com/embed/Wp-X2OzLykM?playsinline=1&rel=0&modestbranding=1"
+          title="Aulinhas da EVG"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          allowfullscreen
+          loading="lazy"
+        ></iframe>
       </div>
     </section>
 
-    <!-- ========== BOTÃO PRINCIPAL (aparece após ~2 min) ========== -->
-    <div class="cta-primary" id="ctaPrimary">
-      <a href="#" class="btn" id="btnWhatsApp1" rel="noopener noreferrer">
+    <!-- ========== BOTÃO PRINCIPAL (sempre visível) ========== -->
+    <div class="cta-primary">
+      <a href="https://wa.me/5513996776281?text=Ol%C3%A1%21%20Assisti%20ao%20v%C3%ADdeo%20e%20gostaria%20de%20participar%20das%20Aulinhas%20da%20EVG." class="btn" target="_blank" rel="noopener noreferrer">
         QUERO PARTICIPAR DAS AULAS 🙏🏽
       </a>
     </div>
@@ -410,7 +381,7 @@
       <p>
         Clique no botão e fale conosco. Envie seu nome e demonstre seu interesse em participar das aulas.
       </p>
-      <a href="#" class="btn btn-secondary" id="btnWhatsApp2" rel="noopener noreferrer">
+      <a href="https://wa.me/5513996776281?text=Ol%C3%A1%21%20Assisti%20ao%20v%C3%ADdeo%20e%20gostaria%20de%20participar%20das%20Aulinhas%20da%20EVG." class="btn btn-secondary" target="_blank" rel="noopener noreferrer">
         QUERO PARTICIPAR 🙏🏽
       </a>
     </div>
@@ -422,146 +393,5 @@
     </div>
   </footer>
 
-  <script>
-    /* ============================================================
-       CONFIGURAÇÕES FÁCEIS DE ALTERAR
-       ============================================================ */
-
-    // LINK DO WHATSAPP — cole aqui o link completo do WhatsApp
-    // Exemplo: "https://wa.me/5511999999999?text=Olá..."
-    const WHATSAPP_LINK = "COLE_AQUI_O_LINK_DO_WHATSAPP";
-
-    // Mensagem automática que será enviada (já codificada no link se preferir)
-    // Se o WHATSAPP_LINK já tiver ?text=, pode deixar vazio ou ajustar.
-    const WHATSAPP_MESSAGE = "Olá! Assisti ao vídeo e gostaria de participar das Aulinhas da EVG.";
-
-    // ID do vídeo do YouTube (Shorts)
-    const YOUTUBE_VIDEO_ID = "Wp-X2OzLykM";
-
-    // Tempo em segundos para liberar o botão (aproximadamente 2 minutos)
-    const UNLOCK_TIME = 120;
-
-    /* ============================================================
-       LÓGICA DO WHATSAPP
-       ============================================================ */
-    function buildWhatsAppUrl() {
-      // Se o usuário já colou um link completo com texto, usa ele.
-      // Caso contrário, monta a partir do número + mensagem.
-      if (WHATSAPP_LINK && WHATSAPP_LINK !== "COLE_AQUI_O_LINK_DO_WHATSAPP") {
-        // Se já tem parâmetro text, usa direto
-        if (WHATSAPP_LINK.includes("text=")) {
-          return WHATSAPP_LINK;
-        }
-        // Se é só o número ou link sem texto, adiciona a mensagem
-        const separator = WHATSAPP_LINK.includes("?") ? "&" : "?";
-        return WHATSAPP_LINK + separator + "text=" + encodeURIComponent(WHATSAPP_MESSAGE);
-      }
-      // Fallback de segurança (não abre nada real)
-      return "#";
-    }
-
-    function setupWhatsAppButtons() {
-      const url = buildWhatsAppUrl();
-      const btn1 = document.getElementById("btnWhatsApp1");
-      const btn2 = document.getElementById("btnWhatsApp2");
-      if (btn1) {
-        btn1.href = url;
-        btn1.target = "_blank";
-      }
-      if (btn2) {
-        btn2.href = url;
-        btn2.target = "_blank";
-      }
-    }
-
-    /* ============================================================
-       YOUTUBE IFrame Player API
-       ============================================================ */
-    let player = null;
-    let checkInterval = null;
-    let buttonShown = false;
-
-    // Carrega a API do YouTube
-    function loadYouTubeAPI() {
-      const tag = document.createElement("script");
-      tag.src = "https://www.youtube.com/iframe_api";
-      const firstScript = document.getElementsByTagName("script")[0];
-      firstScript.parentNode.insertBefore(tag, firstScript);
-    }
-
-    // Chamada oficial da API quando estiver pronta
-    function onYouTubeIframeAPIReady() {
-      player = new YT.Player("player", {
-        videoId: YOUTUBE_VIDEO_ID,
-        playerVars: {
-          playsinline: 1,
-          rel: 0,
-          modestbranding: 1,
-          controls: 1,
-          fs: 1,
-          // Shorts funciona melhor com essas configurações
-        },
-        events: {
-          onReady: onPlayerReady,
-          onStateChange: onPlayerStateChange
-        }
-      });
-    }
-
-    function onPlayerReady(event) {
-      // Player pronto. Começamos a monitorar o tempo quando o usuário começar a assistir.
-      startTimeWatcher();
-    }
-
-    function onPlayerStateChange(event) {
-      // 1 = playing, 2 = paused, 0 = ended
-      if (event.data === YT.PlayerState.PLAYING) {
-        startTimeWatcher();
-      }
-    }
-
-    function startTimeWatcher() {
-      if (checkInterval || buttonShown) return;
-
-      checkInterval = setInterval(function () {
-        if (!player || typeof player.getCurrentTime !== "function") return;
-
-        try {
-          const currentTime = player.getCurrentTime();
-          // Só libera se realmente reproduziu até o tempo definido
-          if (currentTime >= UNLOCK_TIME && !buttonShown) {
-            showPrimaryButton();
-            clearInterval(checkInterval);
-            checkInterval = null;
-          }
-        } catch (e) {
-          // Silencia erros temporários da API
-        }
-      }, 800); // verifica a cada 0,8s (eficiente e preciso o suficiente)
-    }
-
-    function showPrimaryButton() {
-      buttonShown = true;
-      const cta = document.getElementById("ctaPrimary");
-      if (cta) {
-        cta.classList.add("visible");
-        // Pequeno delay para garantir que o display:block + animação funcionem
-        requestAnimationFrame(function () {
-          cta.style.display = "block";
-        });
-      }
-    }
-
-    /* ============================================================
-       INICIALIZAÇÃO
-       ============================================================ */
-    document.addEventListener("DOMContentLoaded", function () {
-      setupWhatsAppButtons();
-      loadYouTubeAPI();
-    });
-
-    // Garante que a função global exista para a API do YouTube
-    window.onYouTubeIframeAPIReady = onYouTubeIframeAPIReady;
-  </script>
 </body>
 </html>
